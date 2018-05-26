@@ -15,6 +15,8 @@ https://movidius.github.io/ncsdk/ncapi/python_api_migration.html
 @jincongho 's project was an adaptation from https://github.com/movidius/ncappzoo/tree/master/caffe/TinyYolo 
 Based on the original example, it repo shows how to replace the input source with webcam's stream. 
 So you get a real time object detection camera now.
+There is also another fork of this which includes commands to use Pi Camera as a source 
+https://github.com/mingfengwuye/NCS_TinyYolo/
 
 ![demo](https://media.giphy.com/media/l3mZsC4VyDE77N7KU/giphy.gif)
 
