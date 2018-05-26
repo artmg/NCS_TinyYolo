@@ -231,7 +231,7 @@ video_capture = cv2.VideoCapture(0)
 video_capture.set(cv2.CAP_PROP_FPS, 2)
 
 #Open Device
-mvnc.global_set_option(mvnc.GlobalOption.LOG_LEVEL, 0)
+mvnc.global_set_option(mvnc.GlobalOption.RW_LOG_LEVEL, 0)
 devices = mvnc.enumerate_devices()
 if len(devices) == 0:
     print('No devices found')
@@ -243,7 +243,7 @@ device.open()
 with open(tiny_yolo_graph_file, mode='rb') as f:
     graph_from_disk = f.read()
 
-graph = Graph('Graph1')
+graph = mvnc.Graph('Graph1')
 graph.allocate(device,graph_from_disk)
 
 # CONVENIENCE FUNCTION: 
