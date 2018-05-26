@@ -231,18 +231,24 @@ video_capture = cv2.VideoCapture(0)
 video_capture.set(cv2.CAP_PROP_FPS, 2)
 
 #Open Device
-mvnc.SetGlobalOption(mvnc.GlobalOption.LOG_LEVEL, 0)
-devices = mvnc.EnumerateDevices()
+mvnc.global_set_option(mvnc.GlobalOption.LOG_LEVEL, 0)
+devices = mvnc.enumerate_devices()
 if len(devices) == 0:
     print('No devices found')
     exit()
 device = mvnc.Device(devices[0])
-device.OpenDevice()
+device.open()
 
 #Load graph from disk and allocate graph via API
 with open(tiny_yolo_graph_file, mode='rb') as f:
     graph_from_disk = f.read()
-graph = device.AllocateGraph(graph_from_disk)
+
+graph = Graph('Graph1')
+graph.allocate(device,graph_from_disk)
+
+# CONVENIENCE FUNCTION: 
+# Allocate the graph to the device and create input/output Fifos with default options in one call
+input_fifo, output_fifo = graph.allocate_with_fifos(device, graph_from_disk)
 
 #Track Webcam
 while True:
@@ -252,17 +258,24 @@ while True:
 
     if(ret==False):
         continue
-
     #Preprocess Image
     input_image = cv2.resize(frame, (NETWORK_IMAGE_WIDTH, NETWORK_IMAGE_HEIGHT), cv2.INTER_LINEAR)
     display_image = input_image
     input_image = input_image.astype(np.float32)
     input_image = np.divide(input_image, 255.0)
 
+    # NB: SDK1 required 16 bit floating point data type for input_image
+    #     SDK2 requires input_image data type must match input Fifo data type
+
     #Load Input Image
-    graph.LoadTensor(input_image.astype(np.float16), 'user object')
-    output, userobj = graph.GetResult()
-    
+    # CONVENIENCE FUNCTION: 
+    # Write the image to the input queue and queue the inference in one call
+    graph.queue_inference_with_fifo_elem(input_fifo, output_fifo, input_image, None)
+    # graph.queue_inference_with_fifo_elem(input_fifo, output_fifo, input_image.astype(np.float16), 'user object')
+
+    # Get the results from the output queue
+    output, user_obj = output_fifo.read_elem()
+
     # filter out all the objects/boxes that don't meet thresholds
     filtered_objs = filter_objects(output.astype(np.float32), input_image.shape[1], input_image.shape[0]) # fc27 instead of fc12 for yolo_small
 
@@ -276,7 +289,10 @@ video_capture.release()
 cv2.destroyAllWindows()
 
 #Clean up
-graph.DeallocateGraph()
-device.CloseDevice()
+input_fifo.destroy()
+output_fifo.destroy()
+graph.destroy()
+device.close()
+device.destroy()
 
 print('Finished')
