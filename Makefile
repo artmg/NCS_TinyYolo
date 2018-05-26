@@ -92,7 +92,7 @@ graph:
 .PHONY: run_py
 run_py: compile
 	@echo "\nmaking run_py"
-	python3 ./run.py
+	python3 ./stream.py
 
 .PHONY: help
 help:
@@ -104,7 +104,7 @@ help:
 	@echo "  make compile - runs SDK compiler tool to compile the NCS graph file for the network";
 	@echo "  make profile - runs the SDK profiler tool to profile the network creating output_report.html";
 	@echo "  make browse_profile - runs the SDK profiler tool and brings up report in browser.";
-	@echo "  make run_py - runs the run.py python example program";
+	@echo "  make run_py - runs the stream.py python example program";
 	@echo "  make clean - removes all created content"
 
 clean_caffe_model:
