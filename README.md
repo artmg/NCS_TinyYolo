@@ -1,9 +1,22 @@
+
+# quickstart
+
+```
+make
+make run_py
+```
+
 # Introduction
 
-This is an adaptation from https://github.com/movidius/ncappzoo/tree/master/caffe/TinyYolo Based on the original example, this repo shows how to replace the input source with webcam's stream. So you get a real time object detection camera now!
+Now that NCSDK2 has been released, this is a fork of https://github.com/jincongho/NCS_TinyYolo 
+that has been migrated to the new SDK version, using the guide 
+https://movidius.github.io/ncsdk/ncapi/python_api_migration.html
+
+@jincongho 's project was an adaptation from https://github.com/movidius/ncappzoo/tree/master/caffe/TinyYolo 
+Based on the original example, it repo shows how to replace the input source with webcam's stream. 
+So you get a real time object detection camera now.
 
 ![demo](https://media.giphy.com/media/l3mZsC4VyDE77N7KU/giphy.gif)
-
 
 The TinyYolo network can be used for object recognition and classification. See https://pjreddie.com/darknet/yolov1/ for more information on this network. The provided Makefile does the following
 
@@ -11,6 +24,13 @@ The TinyYolo network can be used for object recognition and classification. See 
 2. Downloads the .caffemodel file which was trained.
 3. Profiles and Compiles the network using the Neural Compute SDK.
 4. Runs the provided stream.py program that does a single inference on a provided image as an example on how to use the network using the Neural Compute API
+
+After you have done the initial `make` you can re-run the code 
+either with `make run_py` or simply by running 
+
+```
+python3 stream.py
+```
 
 # Makefile
 
